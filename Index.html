@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Precios</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h1>Calculadora de Precios de Medias</h1>
+
+    <div>
+        <label for="modelo">Modelo de Medias:</label>
+        <input type="text" id="modelo">
+    </div>
+
+    <div>
+        <label for="precioDocena">Precio por Docena (USD):</label>
+        <input type="number" id="precioDocena">
+    </div>
+
+    <div>
+        <label for="tasaCambio">Valor del Dólar (BOB):</label>
+        <input type="number" id="tasaCambio">
+    </div>
+
+    <div>
+        <label for="cantidad">Cantidad de Bultos:</label>
+        <input type="number" id="cantidad">
+    </div>
+
+    <div>
+        <label for="docenas">Docenas por Bulto:</label>
+        <input type="number" id="docenas">
+    </div>
+
+    <div>
+        <label for="margen">Margen de Ganancia (%):</label>
+        <input type="number" id="margen">
+    </div>
+
+    <div>
+        <label for="pilotajeIquique">Pilotaje en Iquique (USD):</label>
+        <input type="number" id="pilotajeIquique">
+    </div>
+
+    <div>
+        <label for="pilotajeOruro">Pilotaje en Oruro (USD):</label>
+        <input type="number" id="pilotajeOruro">
+    </div>
+
+    <button onclick="calcular()">Calcular</button>
+
+    <div id="resultado"></div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
