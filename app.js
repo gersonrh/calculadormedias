@@ -35,11 +35,14 @@ function calcular() {
     // Aplicar margen de ganancia
     let precioVentaFinalCBBA = precioFinalDocenaTotal * (1 + margen / 100);
 
-    // Calcular el precio total de los bultos en Cochabamba
-    let precioTotalBultosCBBA = precioVentaFinalCBBA * totalDocenas;
+    // Calcular el precio total de los bultos en Cochabamba con pilotaje
+    let precioTotalBultosCBBAConPilotaje = precioVentaFinalCBBA * totalDocenas;
+
+    // Calcular el precio total de los bultos en Cochabamba sin pilotaje
+    let precioTotalBultosCBBASinPilotaje = (precioDocenaBOB * (1 + margen / 100)) * totalDocenas;
 
     // Calcular margen de ganancia por los 10 bultos
-    let margenGanancia10Bultos = precioTotalBultosCBBA * (margen / 100);
+    let margenGanancia10Bultos = precioTotalBultosCBBAConPilotaje * (margen / 100);
 
     // Formatear números para mejor visualización
     let formatter = new Intl.NumberFormat('es-BO', { style: 'currency', currency: 'BOB', minimumFractionDigits: 2 });
@@ -48,7 +51,8 @@ function calcular() {
     let resultado = `
         <h2>Resumen para ${modelo}</h2>
         <p><strong>Cantidad de bultos comprados:</strong> ${cantidadBultos}</p>
-        <p><strong>Precio total de los bultos en Cochabamba:</strong> ${formatter.format(precioTotalBultosCBBA)}</p>
+        <p><strong>Precio total de los bultos en Cochabamba sin pilotaje:</strong> ${formatter.format(precioTotalBultosCBBASinPilotaje)}</p>
+        <p><strong>Precio total de los bultos en Cochabamba con pilotaje:</strong> ${formatter.format(precioTotalBultosCBBAConPilotaje)}</p>
         <p><strong>Margen de ganancia por los 10 bultos:</strong> ${formatter.format(margenGanancia10Bultos)}</p>
         <p><strong>Precio base por docena:</strong> ${formatter.format(precioDocenaBOB)}</p>
         <p><strong>Precio con pilotaje:</strong> ${formatter.format(precioFinalDocenaTotal)}</p>
