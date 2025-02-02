@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Precios</title>
+    <title>Calculadora de Precios de Medias</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -15,13 +15,13 @@
     </div>
 
     <div>
-        <label for="docenas">Docenas por Bulto:</label>
+        <label for="docenas">Cantidad de Docenas por Bulto:</label>
         <input type="number" id="docenas">
     </div>
 
     <div>
-        <label for="pilotajeBulto">Pilotaje por Bulto (USD):</label>
-        <input type="number" id="pilotajeBulto">
+        <label for="pilotaje">Pilotaje por Bulto (USD):</label>
+        <input type="number" id="pilotaje">
     </div>
 
     <div>
@@ -35,14 +35,14 @@
     </div>
 
     <div>
-        <label for="cantidad">Cantidad de Bultos:</label>
-        <input type="number" id="cantidad">
+        <label for="cantidadBultos">Cantidad de Bultos:</label>
+        <input type="number" id="cantidadBultos">
     </div>
 
     <button onclick="calcular()">Calcular</button>
 
     <div id="resultado"></div>
 
-    <script src="js/app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
