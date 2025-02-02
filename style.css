@@ -16,18 +16,15 @@ div {
 
 label {
     font-size: 18px;
-    display: block;
-    margin-bottom: 5px;
 }
 
 input {
     padding: 10px;
     font-size: 16px;
+    margin: 10px;
     width: 250px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    display: block;
-    margin: 0 auto;
 }
 
 button {
@@ -46,9 +43,4 @@ button:hover {
 
 #resultado {
     margin-top: 20px;
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    display: inline-block;
 }
