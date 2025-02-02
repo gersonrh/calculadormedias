@@ -3,55 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Precios</title>
+    <title>Calculadora de Precios de Medias</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
     <h1>Calculadora de Precios de Medias</h1>
 
-    <div class="container">
-        <div class="input-group">
-            <label for="modelo">Modelo de Medias:</label>
-            <input type="text" id="modelo">
-        </div>
-
-        <div class="input-group">
-            <label for="precioDocena">Precio por Docena (USD):</label>
-            <input type="number" id="precioDocena">
-        </div>
-
-        <div class="input-group">
-            <label for="tasaCambio">Valor del Dólar (BOB):</label>
-            <input type="number" id="tasaCambio">
-        </div>
-
-        <div class="input-group">
-            <label for="cantidad">Cantidad de Bultos:</label>
-            <input type="number" id="cantidad">
-        </div>
-
-        <div class="input-group">
-            <label for="docenas">Docenas por Bulto:</label>
-            <input type="number" id="docenas">
-        </div>
-
-        <div class="input-group">
-            <label for="margen">Margen de Ganancia (%):</label>
-            <input type="number" id="margen">
-        </div>
-
-        <div class="input-group">
-            <label for="pilotaje">Pilotaje Total (USD):</label>
-            <input type="number" id="pilotaje">
-        </div>
-
-        <button onclick="calcular()">Calcular</button>
-
-        <div id="resultado"></div>
+    <div>
+        <label for="precioDocena">Precio por Docena (USD):</label>
+        <input type="number" id="precioDocena">
     </div>
 
-    <script src="app.js"></script>
+    <div>
+        <label for="docenas">Cantidad de Docenas por Bulto:</label>
+        <input type="number" id="docenas">
+    </div>
 
+    <div>
+        <label for="pilotaje">Pilotaje por Bulto (USD):</label>
+        <input type="number" id="pilotaje">
+    </div>
+
+    <div>
+        <label for="cantidadBultos">Cantidad de Bultos:</label>
+        <input type="number" id="cantidadBultos">
+    </div>
+
+    <div>
+        <label for="tasaCambio">Valor del Dólar (BOB):</label>
+        <input type="number" id="tasaCambio">
+    </div>
+
+    <div>
+        <label for="margen">Margen de Ganancia (%):</label>
+        <input type="number" id="margen">
+    </div>
+
+    <button onclick="calcular()">Calcular</button>
+
+    <div id="resultado"></div>
+
+    <script src="app.js"></script>
 </body>
 </html>
