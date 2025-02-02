@@ -18,41 +18,29 @@ function calcular() {
         return;
     }
 
-    // Cálculo del precio del bulto sin pilotaje
-    let precioBultoUSD = precioPorDocenaUSD * docenasPorBulto;
-    let precioBultoBOB = precioBultoUSD * tasaCambio;
-
     // Cálculo del precio del bulto con pilotaje
-    let precioBultoConPilotajeUSD = precioBultoUSD + pilotajePorBultoUSD;
+    let precioBultoConPilotajeUSD = (precioPorDocenaUSD * docenasPorBulto) + pilotajePorBultoUSD;
     let precioBultoConPilotajeBOB = precioBultoConPilotajeUSD * tasaCambio;
 
-    // Cálculo del precio de la docena en BOB con y sin pilotaje
-    let precioDocenaBOB = precioBultoBOB / docenasPorBulto;
+    // Cálculo del precio de la docena en BOB con pilotaje
     let precioDocenaConPilotajeBOB = precioBultoConPilotajeBOB / docenasPorBulto;
 
     // Aplicar margen de ganancia
-    let precioVentaDocenaBOB = precioDocenaBOB * (1 + margen / 100);
     let precioVentaDocenaConPilotajeBOB = precioDocenaConPilotajeBOB * (1 + margen / 100);
 
-    // Cálculo del total de bultos
-    let totalBultosSinPilotaje = precioBultoBOB * cantidadBultos;
+    // Cálculo del total de bultos con pilotaje
     let totalBultosConPilotaje = precioBultoConPilotajeBOB * cantidadBultos;
-    let totalBultosConMargen = precioVentaDocenaBOB * docenasPorBulto * cantidadBultos;
     let totalBultosConPilotajeYMargen = precioVentaDocenaConPilotajeBOB * docenasPorBulto * cantidadBultos;
 
     // Formatear números para mejor visualización
     let formatter = new Intl.NumberFormat('es-BO', { style: 'currency', currency: 'BOB', minimumFractionDigits: 2 });
 
-    // Mostrar resultados
+    // Mostrar resultados (solo con pilotaje)
     let resultado = `
         <h2>Resultados</h2>
-        <p><strong>Precio por Docena en BOB (Sin Pilotaje):</strong> ${formatter.format(precioDocenaBOB)}</p>
         <p><strong>Precio por Docena en BOB (Con Pilotaje):</strong> ${formatter.format(precioDocenaConPilotajeBOB)}</p>
-        <p><strong>Precio de Venta por Docena (Sin Pilotaje):</strong> ${formatter.format(precioVentaDocenaBOB)}</p>
         <p><strong>Precio de Venta por Docena (Con Pilotaje):</strong> ${formatter.format(precioVentaDocenaConPilotajeBOB)}</p>
-        <p><strong>Total Bultos en BOB (Sin Pilotaje):</strong> ${formatter.format(totalBultosSinPilotaje)}</p>
         <p><strong>Total Bultos en BOB (Con Pilotaje):</strong> ${formatter.format(totalBultosConPilotaje)}</p>
-        <p><strong>Total Bultos con Margen (Sin Pilotaje):</strong> ${formatter.format(totalBultosConMargen)}</p>
         <p><strong>Total Bultos con Margen (Con Pilotaje):</strong> ${formatter.format(totalBultosConPilotajeYMargen)}</p>
     `;
     
