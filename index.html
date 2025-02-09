@@ -7,53 +7,29 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Calculadora de Medias</h1>
+    <div id="menu">
+        <button id="verNotas">Ver Notas</button>
+        <button id="crearNotas">Crear Notas</button>
+    </div>
 
-        <!-- Menú de opciones -->
-        <div id="menu">
-            <button onclick="mostrarNotas()">Ver Notas</button>
-            <button onclick="mostrarFormulario()">Crear Nota</button>
-        </div>
+    <div id="crearNotasForm" style="display:none;">
+        <h3>Crear Nota</h3>
+        <label for="codigo">Código del modelo:</label>
+        <input type="text" id="codigo">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre">
+        <label for="precio">Precio de la docena (en USD):</label>
+        <input type="number" id="precio">
+        <label for="tasa">Tasa de cambio (USD a BOB):</label>
+        <input type="number" id="tasa">
+        <label for="margen">Margen de ganancia (%):</label>
+        <input type="number" id="margen">
+        <button id="guardarNota">Guardar Nota</button>
+    </div>
 
-        <!-- Formulario de entrada para crear notas -->
-        <div id="formulario" class="input-form" style="display:none;">
-            <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" placeholder="Nombre del producto">
-            
-            <label for="codigo">Código:</label>
-            <input type="text" id="codigo" placeholder="Código del producto">
-            
-            <label for="precioDocena">Precio por docena (USD):</label>
-            <input type="number" id="precioDocena" placeholder="Precio por docena en dólares">
-            
-            <label for="tasaCambio">Tasa de cambio (USD a BOB):</label>
-            <input type="number" id="tasaCambio" placeholder="Tasa de cambio">
-            
-            <label for="docenas">Cantidad de docenas por bulto:</label>
-            <input type="number" id="docenas" placeholder="Cantidad de docenas por bulto">
-            
-            <label for="cantidad">Cantidad de bultos:</label>
-            <input type="number" id="cantidad" placeholder="Cantidad de bultos">
-            
-            <label for="margen">Margen de ganancia (%):</label>
-            <input type="number" id="margen" placeholder="Margen de ganancia">
-            
-            <label for="pilotaje">Pilotaje por bulto (USD):</label>
-            <input type="number" id="pilotaje" placeholder="Valor del pilotaje por bulto">
-
-            <button onclick="calcular()">Calcular y Guardar Nota</button>
-        </div>
-
-        <!-- Mostrar resultados -->
-        <div id="resultado"></div>
-
-        <!-- Mostrar notas guardadas -->
-        <div id="notasGuardadas" style="display:none;">
-            <h2>Notas Guardadas</h2>
-            <div id="notasListadas"></div>
-            <button onclick="mostrarFormulario()">Volver al formulario</button>
-        </div>
+    <div id="verNotasList" style="display:none;">
+        <h3>Notas Guardadas</h3>
+        <div id="notasLista"></div>
     </div>
 
     <script src="app.js"></script>
