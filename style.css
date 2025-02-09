@@ -1,86 +1,32 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-
-.container {
-    background-color: #fff;
+    text-align: center;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px;
-}
-
-h1 {
-    text-align: center;
-    color: #333;
-}
-
-h2 {
-    text-align: center;
-    color: #333;
-}
-
-.input-form label {
-    font-size: 16px;
-    display: block;
-    margin: 10px 0 5px;
-}
-
-.input-form input {
-    width: 100%;
-    padding: 8px;
-    margin: 5px 0;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    background-color: #f4f4f4;
 }
 
 button {
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
     background-color: #4CAF50;
     color: white;
-    padding: 10px 15px;
     border: none;
     border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    width: 100%;
 }
 
 button:hover {
     background-color: #45a049;
 }
 
-#resultado {
-    margin-top: 20px;
-    font-size: 16px;
+input {
+    padding: 8px;
+    margin: 5px;
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
-.resultado-item {
-    margin: 5px 0;
-}
-
-#notasListadas {
-    margin-top: 20px;
-}
-
-.notas-lista-item {
-    margin-bottom: 10px;
-}
-
-.notas-lista-item button {
-    background-color: red;
-    width: auto;
-    padding: 5px 10px;
-    font-size: 14px;
-}
-
-.notas-lista-item button:hover {
-    background-color: darkred;
+#notasLista {
+    margin-top: 20px;
 }
