@@ -1,97 +1,148 @@
-document.getElementById('crearNotas').addEventListener('click', function() {
-    document.getElementById('crearNotasForm').style.display = 'block';
-    document.getElementById('verNotasList').style.display = 'none';
+// Referencias a elementos
+const crearNotaBtn = document.getElementById('crearNotaBtn');
+const verNotasBtn = document.getElementById('verNotasBtn');
+const crearNotaSection = document.getElementById('crearNotaSection');
+const verNotasSection = document.getElementById('verNotasSection');
+const createNoteForm = document.getElementById('createNoteForm');
+const calculationResult = document.getElementById('calculationResult');
+const notesContainer = document.getElementById('notesContainer');
+
+// Navegación entre secciones
+crearNotaBtn.addEventListener('click', () => {
+  crearNotaSection.style.display = 'block';
+  verNotasSection.style.display = 'none';
 });
 
-document.getElementById('verNotas').addEventListener('click', function() {
-    document.getElementById('crearNotasForm').style.display = 'none';
-    document.getElementById('verNotasList').style.display = 'block';
-    mostrarNotas();
+verNotasBtn.addEventListener('click', () => {
+  crearNotaSection.style.display = 'none';
+  verNotasSection.style.display = 'block';
+  displayNotes();
 });
 
-document.getElementById('guardarNota').addEventListener('click', function() {
-    const codigo = document.getElementById('codigo').value;
-    const nombre = document.getElementById('nombre').value;
-    const precio = parseFloat(document.getElementById('precio').value);
-    const tasa = parseFloat(document.getElementById('tasa').value);
-    const margen = parseFloat(document.getElementById('margen').value);
-
-    if (!codigo || !nombre || isNaN(precio) || isNaN(tasa) || isNaN(margen)) {
-        alert("Por favor, ingresa todos los datos correctamente.");
-        return;
-    }
-
-    // Cálculo de la docena con y sin margen
-    const precioConMargen = precio * tasa * (1 + margen / 100);
-    const precioSinMargen = precio * tasa;
-
-    // Crear el objeto de la nota
-    const nota = {
-        codigo,
-        nombre,
-        precio,
-        tasa,
-        margen,
-        precioConMargen,
-        precioSinMargen
-    };
-
-    // Guardar la nota en el localStorage
-    let notasGuardadas = JSON.parse(localStorage.getItem('notas')) || [];
-    notasGuardadas.push(nota);
-    localStorage.setItem('notas', JSON.stringify(notasGuardadas));
-
-    // Limpiar los campos
-    document.getElementById('codigo').value = '';
-    document.getElementById('nombre').value = '';
-    document.getElementById('precio').value = '';
-    document.getElementById('tasa').value = '';
-    document.getElementById('margen').value = '';
-
-    alert('Nota guardada exitosamente.');
+// Al enviar el formulario se realizan los cálculos y se guarda la nota
+createNoteForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  // Obtener valores de entrada
+  const price = parseFloat(document.getElementById('price').value);              // Precio de docena en USD
+  const exchangeRate = parseFloat(document.getElementById('exchange').value);     // Valor del dólar en BOB
+  const numPackages = parseInt(document.getElementById('packages').value);        // Cantidad de bultos
+  const dozensPerPackage = parseInt(document.getElementById('dozens').value);     // Docenas por bulto
+  const pilotage = parseFloat(document.getElementById('pilotage').value);         // Pilotaje por bulto en USD
+  const modelCode = document.getElementById('modelCode').value.trim();            // Código del modelo
+  const modelName = document.getElementById('modelName').value.trim();            // Nombre del modelo
+  const margin = parseFloat(document.getElementById('margin').value);             // Margen de ganancia (%)
+  
+  // Validar entradas
+  if (isNaN(price) || isNaN(exchangeRate) || isNaN(numPackages) || isNaN(dozensPerPackage) ||
+      isNaN(pilotage) || isNaN(margin) || !modelCode || !modelName ||
+      price <= 0 || exchangeRate <= 0 || numPackages <= 0 || dozensPerPackage <= 0 || pilotage < 0 || margin < 0) {
+    alert("Por favor, ingresa valores válidos en todos los campos.");
+    return;
+  }
+  
+  // Cálculos:
+  // 1. Precio de docena con pilotaje (sin margen)
+  // Distribuir el pilotaje por docena: pilotage / (docenas por bulto)
+  const pilotagePerDocenaUSD = pilotage / dozensPerPackage;
+  const docenaPriceWithPilotageUSD = price + pilotagePerDocenaUSD;
+  const docenaPriceWithPilotageBOB = docenaPriceWithPilotageUSD * exchangeRate;
+  
+  // 2. Precio de docena con pilotaje + margen
+  const docenaPriceWithMarginBOB = docenaPriceWithPilotageBOB * (1 + margin / 100);
+  
+  // 3. Precio de bulto con pilotaje (sin margen)
+  // Se multiplica el precio de docena en USD por docenas por bulto y se suma el pilotaje,
+  // luego se convierte a BOB.
+  const packagePriceWithPilotageUSD = (price * dozensPerPackage) + pilotage;
+  const packagePriceWithPilotageBOB = packagePriceWithPilotageUSD * exchangeRate;
+  
+  // 4. Precio de bulto con pilotaje + margen
+  const packagePriceWithMarginBOB = packagePriceWithPilotageBOB * (1 + margin / 100);
+  
+  // 5. Total revenue de todos los bultos (con margen)
+  const totalRevenueWithMarginBOB = packagePriceWithMarginBOB * numPackages;
+  
+  // Mostrar resultados en la sección del formulario
+  const resultHTML = `
+    <h3>Resultados para ${modelName} (Código: ${modelCode})</h3>
+    <p><strong>Precio de docena con pilotaje (sin margen):</strong> ${docenaPriceWithPilotageBOB.toFixed(2)} BOB</p>
+    <p><strong>Precio de docena con pilotaje + margen:</strong> ${docenaPriceWithMarginBOB.toFixed(2)} BOB</p>
+    <p><strong>Precio de bulto con pilotaje (sin margen):</strong> ${packagePriceWithPilotageBOB.toFixed(2)} BOB</p>
+    <p><strong>Precio de bulto con pilotaje + margen:</strong> ${packagePriceWithMarginBOB.toFixed(2)} BOB</p>
+    <p><strong>Total revenue de todos los bultos (con margen):</strong> ${totalRevenueWithMarginBOB.toFixed(2)} BOB</p>
+  `;
+  calculationResult.innerHTML = resultHTML;
+  
+  // Crear objeto de nota con la información necesaria para la vista previa:
+  // Se desea que en la vista "Ver Notas" se muestre:
+  // - Código
+  // - Nombre
+  // - Precio de venta en docena con pilotaje + margen (docenaPriceWithMarginBOB)
+  // - Precio de docena con pilotaje sin margen (docenaPriceWithPilotageBOB)
+  const note = {
+    modelCode,
+    modelName,
+    docenaPriceWithMarginBOB: docenaPriceWithMarginBOB.toFixed(2),
+    docenaPriceWithPilotageBOB: docenaPriceWithPilotageBOB.toFixed(2)
+  };
+  
+  // Guardar la nota en localStorage
+  let notes = JSON.parse(localStorage.getItem('notes')) || [];
+  notes.push(note);
+  localStorage.setItem('notes', JSON.stringify(notes));
+  
+  // Reiniciar formulario
+  createNoteForm.reset();
 });
 
-function mostrarNotas() {
-    const notas = JSON.parse(localStorage.getItem('notas')) || [];
-    const notasListaDiv = document.getElementById('notasLista');
-
-    if (notas.length === 0) {
-        notasListaDiv.innerHTML = '<p>No hay notas guardadas.</p>';
-        return;
-    }
-
-    let notasHTML = '';
-    notas.forEach((nota, index) => {
-        notasHTML += `
-            <div>
-                <p><strong>Código:</strong> ${nota.codigo}</p>
-                <p><strong>Nombre:</strong> ${nota.nombre}</p>
-                <p><strong>Precio por docena con margen:</strong> ${nota.precioConMargen} BOB</p>
-                <p><strong>Precio por docena sin margen:</strong> ${nota.precioSinMargen} BOB</p>
-                <button onclick="eliminarNota(${index})">Eliminar</button>
-                <button onclick="verDetalles(${index})">Ver Detalles</button>
-            </div>
-            <hr>
-        `;
-    });
-
-    notasListaDiv.innerHTML = notasHTML;
+// Función para mostrar notas en la vista "Ver Notas"
+function displayNotes() {
+  let notes = JSON.parse(localStorage.getItem('notes')) || [];
+  notesList.innerHTML = "";
+  
+  if (notes.length === 0) {
+    notesList.innerHTML = "<p>No hay notas guardadas.</p>";
+    return;
+  }
+  
+  notes.forEach((note, index) => {
+    const noteHTML = `
+      <div class="note-item">
+        <p><strong>Código:</strong> ${note.modelCode}</p>
+        <p><strong>Nombre:</strong> ${note.modelName}</p>
+        <p><strong>Precio de venta (docena con pilotaje + margen):</strong> ${note.docenaPriceWithMarginBOB} BOB</p>
+        <p><strong>Precio bruto (docena con pilotaje sin margen):</strong> ${note.docenaPriceWithPilotageBOB} BOB</p>
+        <button class="delete" onclick="deleteNote(${index})">Eliminar</button>
+        <button class="details" onclick="viewDetails(${index})">Ver Detalles</button>
+      </div>
+      <hr>
+    `;
+    notesList.innerHTML += noteHTML;
+  });
 }
 
-function eliminarNota(index) {
-    let notas = JSON.parse(localStorage.getItem('notas')) || [];
-    notas.splice(index, 1); // Eliminar la nota
-    localStorage.setItem('notas', JSON.stringify(notas)); // Guardar el nuevo array en localStorage
-    mostrarNotas(); // Volver a mostrar las notas
+// Función para eliminar una nota
+function deleteNote(index) {
+  let notes = JSON.parse(localStorage.getItem('notes')) || [];
+  notes.splice(index, 1);
+  localStorage.setItem('notes', JSON.stringify(notes));
+  displayNotes();
 }
 
-function verDetalles(index) {
-    const notas = JSON.parse(localStorage.getItem('notas')) || [];
-    const nota = notas[index];
-
-    alert(`Detalles de la Nota:
-    Código: ${nota.codigo}
-    Nombre: ${nota.nombre}
-    Precio por docena con margen: ${nota.precioConMargen} BOB
-    Precio por docena sin margen: ${nota.precioSinMargen} BOB`);
+// Función para ver detalles completos de una nota (en una alerta)
+function viewDetails(index) {
+  let notes = JSON.parse(localStorage.getItem('notes')) || [];
+  let note = notes[index];
+  alert(`Detalles de la Nota:
+Código: ${note.modelCode}
+Nombre: ${note.modelName}
+Precio de docena con pilotaje (sin margen): ${note.docenaPriceWithPilotageBOB} BOB
+Precio de docena con pilotaje + margen: ${note.docenaPriceWithMarginBOB} BOB`);
 }
+
+// Al cargar la página, se muestra la sección de crear nota por defecto
+window.onload = function() {
+  crearNotaSection.style.display = 'block';
+  verNotasSection.style.display = 'none';
+};
