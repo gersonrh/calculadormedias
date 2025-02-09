@@ -4,55 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Medias</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <h1>Calculadora de Medias</h1>
 
-<h1>Calculadora de Precios de Medias</h1>
+        <!-- Formulario para ingresar datos -->
+        <form id="formulario" onsubmit="event.preventDefault(); calcular();">
+            <label for="modelo">Código del Modelo:</label>
+            <input type="text" id="modelo" placeholder="Código del modelo" required>
 
-    <nav>
-        <button onclick="mostrarSeccion('calculadora')">Crear Nota</button>
-        <button onclick="mostrarSeccion('verNotas')">Ver Notas</button>
-    </nav>
+            <label for="precioDocena">Precio por Docena (USD):</label>
+            <input type="number" id="precioDocena" placeholder="Precio por docena en USD" required>
 
-    <section id="calculadora">
-        <h2>Ingresar Datos</h2>
+            <label for="tasaCambio">Tasa de Cambio (USD a BOB):</label>
+            <input type="number" id="tasaCambio" placeholder="Tasa de cambio" required>
 
-        <label>Código del Modelo:</label>
-        <input type="text" id="codigo">
+            <label for="docenas">Cantidad de Docenas por Bulto:</label>
+            <input type="number" id="docenas" placeholder="Cantidad de docenas por bulto" required>
 
-        <label>Nombre del Modelo:</label>
-        <input type="text" id="nombre">
+            <label for="cantidad">Cantidad de Bultos:</label>
+            <input type="number" id="cantidad" placeholder="Cantidad de bultos" required>
 
-        <label>Precio por Docena (USD):</label>
-        <input type="number" id="precioDocena">
+            <label for="margen">Margen de Ganancia (%):</label>
+            <input type="number" id="margen" placeholder="Margen de ganancia" required>
 
-        <label>Tasa de Cambio (BOB/USD):</label>
-        <input type="number" id="tasaCambio">
+            <label for="pilotajeIquique">Pilotaje (USD):</label>
+            <input type="number" id="pilotajeIquique" placeholder="Pilotaje por bulto (USD)" required>
 
-        <label>Docenas por Bulto:</label>
-        <input type="number" id="docenasPorBulto">
+            <button type="submit">Calcular</button>
+        </form>
 
-        <label>Pilotaje por Bulto (USD):</label>
-        <input type="number" id="pilotaje">
-
-        <label>Cantidad de Bultos:</label>
-        <input type="number" id="cantidadBultos">
-
-        <label>Margen de Ganancia (%):</label>
-        <input type="number" id="margen">
-
-        <button onclick="calcular()">Calcular y Guardar</button>
-
+        <!-- Resultados -->
         <div id="resultado"></div>
-    </section>
 
-    <section id="verNotas" style="display: none;">
-        <h2>Notas Guardadas</h2>
-        <div id="listaNotas"></div>
-    </section>
+        <!-- Menú -->
+        <h2>Opciones</h2>
+        <button onclick="mostrarNotas()">Ver Notas</button>
+        <button onclick="guardarNota()">Guardar Nota</button>
+
+        <!-- Notas Guardadas -->
+        <ul id="notasGuardadas"></ul>
+    </div>
 
     <script src="app.js"></script>
-
 </body>
 </html>
