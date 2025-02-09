@@ -19,10 +19,10 @@ verNotasBtn.addEventListener('click', () => {
   displayNotes();
 });
 
-// Al enviar el formulario se realizan los cálculos y se guarda la nota
+// Al enviar el formulario, se realizan los cálculos y se guarda la nota
 createNoteForm.addEventListener('submit', (e) => {
   e.preventDefault();
-  
+
   // Obtener valores de entrada
   const price = parseFloat(document.getElementById('price').value);              // Precio de docena en USD
   const exchangeRate = parseFloat(document.getElementById('exchange').value);     // Valor del dólar en BOB
@@ -32,7 +32,7 @@ createNoteForm.addEventListener('submit', (e) => {
   const modelCode = document.getElementById('modelCode').value.trim();            // Código del modelo
   const modelName = document.getElementById('modelName').value.trim();            // Nombre del modelo
   const margin = parseFloat(document.getElementById('margin').value);             // Margen de ganancia (%)
-  
+
   // Validar entradas
   if (isNaN(price) || isNaN(exchangeRate) || isNaN(numPackages) || isNaN(dozensPerPackage) ||
       isNaN(pilotage) || isNaN(margin) || !modelCode || !modelName ||
@@ -40,30 +40,28 @@ createNoteForm.addEventListener('submit', (e) => {
     alert("Por favor, ingresa valores válidos en todos los campos.");
     return;
   }
-  
+
   // Cálculos:
-  // 1. Precio de docena con pilotaje (sin margen)
-  // Distribuir el pilotaje por docena: pilotage / (docenas por bulto)
+  // 1. Precio de docena con pilotaje (sin margen):
+  // Distribuir el pilotaje entre las docenas por bulto:
   const pilotagePerDocenaUSD = pilotage / dozensPerPackage;
   const docenaPriceWithPilotageUSD = price + pilotagePerDocenaUSD;
   const docenaPriceWithPilotageBOB = docenaPriceWithPilotageUSD * exchangeRate;
   
-  // 2. Precio de docena con pilotaje + margen
+  // 2. Precio de docena con pilotaje + margen:
   const docenaPriceWithMarginBOB = docenaPriceWithPilotageBOB * (1 + margin / 100);
   
-  // 3. Precio de bulto con pilotaje (sin margen)
-  // Se multiplica el precio de docena en USD por docenas por bulto y se suma el pilotaje,
-  // luego se convierte a BOB.
+  // 3. Precio de bulto con pilotaje (sin margen):
   const packagePriceWithPilotageUSD = (price * dozensPerPackage) + pilotage;
   const packagePriceWithPilotageBOB = packagePriceWithPilotageUSD * exchangeRate;
   
-  // 4. Precio de bulto con pilotaje + margen
+  // 4. Precio de bulto con pilotaje + margen:
   const packagePriceWithMarginBOB = packagePriceWithPilotageBOB * (1 + margin / 100);
   
-  // 5. Total revenue de todos los bultos (con margen)
+  // 5. Total revenue de todos los bultos (con margen):
   const totalRevenueWithMarginBOB = packagePriceWithMarginBOB * numPackages;
   
-  // Mostrar resultados en la sección del formulario
+  // Mostrar resultados en la sección de cálculo
   const resultHTML = `
     <h3>Resultados para ${modelName} (Código: ${modelCode})</h3>
     <p><strong>Precio de docena con pilotaje (sin margen):</strong> ${docenaPriceWithPilotageBOB.toFixed(2)} BOB</p>
@@ -74,12 +72,7 @@ createNoteForm.addEventListener('submit', (e) => {
   `;
   calculationResult.innerHTML = resultHTML;
   
-  // Crear objeto de nota con la información necesaria para la vista previa:
-  // Se desea que en la vista "Ver Notas" se muestre:
-  // - Código
-  // - Nombre
-  // - Precio de venta en docena con pilotaje + margen (docenaPriceWithMarginBOB)
-  // - Precio de docena con pilotaje sin margen (docenaPriceWithPilotageBOB)
+  // Crear objeto de nota para guardar en localStorage
   const note = {
     modelCode,
     modelName,
@@ -87,7 +80,6 @@ createNoteForm.addEventListener('submit', (e) => {
     docenaPriceWithPilotageBOB: docenaPriceWithPilotageBOB.toFixed(2)
   };
   
-  // Guardar la nota en localStorage
   let notes = JSON.parse(localStorage.getItem('notes')) || [];
   notes.push(note);
   localStorage.setItem('notes', JSON.stringify(notes));
@@ -96,13 +88,13 @@ createNoteForm.addEventListener('submit', (e) => {
   createNoteForm.reset();
 });
 
-// Función para mostrar notas en la vista "Ver Notas"
+// Función para mostrar notas guardadas
 function displayNotes() {
   let notes = JSON.parse(localStorage.getItem('notes')) || [];
-  notesList.innerHTML = "";
+  notesContainer.innerHTML = "";
   
   if (notes.length === 0) {
-    notesList.innerHTML = "<p>No hay notas guardadas.</p>";
+    notesContainer.innerHTML = "<p>No hay notas guardadas.</p>";
     return;
   }
   
@@ -118,7 +110,7 @@ function displayNotes() {
       </div>
       <hr>
     `;
-    notesList.innerHTML += noteHTML;
+    notesContainer.innerHTML += noteHTML;
   });
 }
 
@@ -130,7 +122,7 @@ function deleteNote(index) {
   displayNotes();
 }
 
-// Función para ver detalles completos de una nota (en una alerta)
+// Función para ver detalles completos de una nota (alerta)
 function viewDetails(index) {
   let notes = JSON.parse(localStorage.getItem('notes')) || [];
   let note = notes[index];
@@ -141,8 +133,8 @@ Precio de docena con pilotaje (sin margen): ${note.docenaPriceWithPilotageBOB} B
 Precio de docena con pilotaje + margen: ${note.docenaPriceWithMarginBOB} BOB`);
 }
 
-// Al cargar la página, se muestra la sección de crear nota por defecto
+// Al cargar la página, mostrar por defecto la sección de crear nota
 window.onload = function() {
   crearNotaSection.style.display = 'block';
-  verNotasSection.style.display = 'none';
+  verNotasSection.style.display = 'none';
 };
