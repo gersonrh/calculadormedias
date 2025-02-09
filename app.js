@@ -41,10 +41,11 @@ createNoteForm.addEventListener('submit', (e) => {
     return;
   }
 
-  // Cálculos:
+  // Cálculos según la lógica solicitada:
   // 1. Precio de docena con pilotaje (sin margen):
-  // Distribuir el pilotaje entre las docenas por bulto:
+  // Distribuir el pilotaje entre las docenas del bulto
   const pilotagePerDocenaUSD = pilotage / dozensPerPackage;
+  // Sumarlo al precio de docena en USD y convertir a BOB
   const docenaPriceWithPilotageUSD = price + pilotagePerDocenaUSD;
   const docenaPriceWithPilotageBOB = docenaPriceWithPilotageUSD * exchangeRate;
   
@@ -52,6 +53,7 @@ createNoteForm.addEventListener('submit', (e) => {
   const docenaPriceWithMarginBOB = docenaPriceWithPilotageBOB * (1 + margin / 100);
   
   // 3. Precio de bulto con pilotaje (sin margen):
+  // Precio de bulto = (precio de docena * docenas por bulto) + pilotaje, convertido a BOB
   const packagePriceWithPilotageUSD = (price * dozensPerPackage) + pilotage;
   const packagePriceWithPilotageBOB = packagePriceWithPilotageUSD * exchangeRate;
   
@@ -72,12 +74,20 @@ createNoteForm.addEventListener('submit', (e) => {
   `;
   calculationResult.innerHTML = resultHTML;
   
-  // Crear objeto de nota para guardar en localStorage
+  // Crear objeto de nota para la vista previa:
+  // En la vista "Ver Notas" se mostrará:
+  // - Código del modelo
+  // - Nombre del modelo
+  // - Precio de venta en docena con pilotaje + margen
+  // - Precio bruto en docena con pilotaje (sin margen)
   const note = {
     modelCode,
     modelName,
     docenaPriceWithMarginBOB: docenaPriceWithMarginBOB.toFixed(2),
-    docenaPriceWithPilotageBOB: docenaPriceWithPilotageBOB.toFixed(2)
+    docenaPriceWithPilotageBOB: docenaPriceWithPilotageBOB.toFixed(2),
+    packagePriceWithPilotageBOB: packagePriceWithPilotageBOB.toFixed(2),
+    packagePriceWithMarginBOB: packagePriceWithMarginBOB.toFixed(2),
+    totalRevenueWithMarginBOB: totalRevenueWithMarginBOB.toFixed(2)
   };
   
   let notes = JSON.parse(localStorage.getItem('notes')) || [];
@@ -88,7 +98,7 @@ createNoteForm.addEventListener('submit', (e) => {
   createNoteForm.reset();
 });
 
-// Función para mostrar notas guardadas
+// Función para mostrar las notas guardadas (lista enumerada)
 function displayNotes() {
   let notes = JSON.parse(localStorage.getItem('notes')) || [];
   notesContainer.innerHTML = "";
@@ -101,7 +111,7 @@ function displayNotes() {
   notes.forEach((note, index) => {
     const noteHTML = `
       <div class="note-item">
-        <p><strong>Código:</strong> ${note.modelCode}</p>
+        <p><strong>${index + 1}. Código:</strong> ${note.modelCode}</p>
         <p><strong>Nombre:</strong> ${note.modelName}</p>
         <p><strong>Precio de venta (docena con pilotaje + margen):</strong> ${note.docenaPriceWithMarginBOB} BOB</p>
         <p><strong>Precio bruto (docena con pilotaje sin margen):</strong> ${note.docenaPriceWithPilotageBOB} BOB</p>
@@ -122,18 +132,23 @@ function deleteNote(index) {
   displayNotes();
 }
 
-// Función para ver detalles completos de una nota (alerta)
+// Función para ver detalles completos de una nota, incluyendo detalles de bultos
 function viewDetails(index) {
   let notes = JSON.parse(localStorage.getItem('notes')) || [];
   let note = notes[index];
+  
+  // Aquí se muestran todos los detalles calculados
   alert(`Detalles de la Nota:
 Código: ${note.modelCode}
 Nombre: ${note.modelName}
 Precio de docena con pilotaje (sin margen): ${note.docenaPriceWithPilotageBOB} BOB
-Precio de docena con pilotaje + margen: ${note.docenaPriceWithMarginBOB} BOB`);
+Precio de docena con pilotaje + margen: ${note.docenaPriceWithMarginBOB} BOB
+Precio de bulto con pilotaje (sin margen): ${note.packagePriceWithPilotageBOB} BOB
+Precio de bulto con pilotaje + margen: ${note.packagePriceWithMarginBOB} BOB
+Total revenue de todos los bultos (con margen): ${note.totalRevenueWithMarginBOB} BOB`);
 }
 
-// Al cargar la página, mostrar por defecto la sección de crear nota
+// Al cargar la página, por defecto se muestra la sección de crear nota
 window.onload = function() {
   crearNotaSection.style.display = 'block';
   verNotasSection.style.display = 'none';
