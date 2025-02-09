@@ -1,7 +1,48 @@
+function mostrarFormulario() {
+    document.getElementById("formulario").style.display = "block";
+    document.getElementById("notasGuardadas").style.display = "none";
+    document.getElementById("menu").style.display = "block";
+}
+
+function mostrarNotas() {
+    document.getElementById("formulario").style.display = "none";
+    document.getElementById("notasGuardadas").style.display = "block";
+    document.getElementById("menu").style.display = "none";
+    cargarNotasGuardadas();
+}
+
+function cargarNotasGuardadas() {
+    let notas = JSON.parse(localStorage.getItem('notas')) || [];
+    let notasListadas = document.getElementById("notasListadas");
+    notasListadas.innerHTML = "";
+
+    if (notas.length === 0) {
+        notasListadas.innerHTML = "<p>No hay notas guardadas.</p>";
+    } else {
+        notas.forEach((nota, index) => {
+            let notaDiv = document.createElement("div");
+            notaDiv.classList.add("notas-lista-item");
+            notaDiv.innerHTML = `
+                <div><strong>Nombre:</strong> ${nota.nombre} <strong>Código:</strong> ${nota.codigo}</div>
+                <div><strong>Precio con margen:</strong> ${nota.precioConMargen} BOB</div>
+                <button onclick="eliminarNota(${index})">Eliminar</button>
+            `;
+            notasListadas.appendChild(notaDiv);
+        });
+    }
+}
+
+function eliminarNota(index) {
+    let notas = JSON.parse(localStorage.getItem('notas')) || [];
+    notas.splice(index, 1);
+    localStorage.setItem('notas', JSON.stringify(notas));
+    cargarNotasGuardadas();
+}
+
 function calcular() {
-    // Obtener valores ingresados por el usuario
-    let modelo = document.getElementById('modelo').value.trim();
+    // Obtener los valores de los inputs
     let nombre = document.getElementById('nombre').value.trim();
+    let codigo = document.getElementById('codigo').value.trim();
     let precioPorDocenaUSD = parseFloat(document.getElementById('precioDocena').value);
     let tasaCambio = parseFloat(document.getElementById('tasaCambio').value);
     let docenasPorBulto = parseInt(document.getElementById('docenas').value);
@@ -9,47 +50,33 @@ function calcular() {
     let margen = parseFloat(document.getElementById('margen').value);
     let pilotajeUSD = parseFloat(document.getElementById('pilotaje').value);
 
-    // Validaciones: verificar que todos los valores sean números válidos y mayores a 0
-    if (!modelo || !nombre || isNaN(precioPorDocenaUSD) || precioPorDocenaUSD <= 0 ||
-        isNaN(tasaCambio) || tasaCambio <= 0 ||
-        isNaN(docenasPorBulto) || docenasPorBulto <= 0 ||
-        isNaN(cantidadBultos) || cantidadBultos <= 0 ||
-        isNaN(margen) || margen < 0 ||
-        isNaN(pilotajeUSD) || pilotajeUSD < 0) {
-
+    // Validar los datos de entrada
+    if (!nombre || !codigo || isNaN(precioPorDocenaUSD) || precioPorDocenaUSD <= 0 ||
+        isNaN(tasaCambio) || tasaCambio <= 0 || isNaN(docenasPorBulto) || docenasPorBulto <= 0 ||
+        isNaN(cantidadBultos) || cantidadBultos <= 0 || isNaN(margen) || margen < 0 || isNaN(pilotajeUSD) || pilotajeUSD < 0) {
         alert("Por favor, ingresa valores válidos en todos los campos.");
         return;
     }
 
-    // Calcular el total de docenas compradas
-    let totalDocenas = cantidadBultos * docenasPorBulto;
-
-    // Calcular el precio de cada docena en BOB (sin margen)
+    // Calcular el precio por docena sin pilotaje en BOB
     let precioDocenaBOB = precioPorDocenaUSD * tasaCambio;
 
-    // Calcular el costo adicional del pilotaje por cada docena
-    let costoPilotajePorDocena = (pilotajeUSD / totalDocenas) * tasaCambio;
+    // Calcular el costo de pilotaje por bulto
+    let costoPilotajePorBulto = pilotajeUSD * tasaCambio;
 
-    // Precio final por docena sumando el pilotaje
-    let precioFinalDocenaTotal = precioDocenaBOB + costoPilotajePorDocena;
+    // Calcular el precio por bulto con pilotaje
+    let precioBultoConPilotajeBOB = (precioDocenaBOB * docenasPorBulto) + costoPilotajePorBulto;
 
-    // Precio de la docena con margen de ganancia
-    let precioVentaFinalConMargen = precioFinalDocenaTotal * (1 + margen / 100);
+    // Calcular el precio por docena con pilotaje
+    let precioDocenaConPilotajeBOB = precioBultoConPilotajeBOB / docenasPorBulto;
 
-    // Mostrar resultados con mejor formato
-    let formatter = new Intl.NumberFormat('es-BO', { style: 'currency', currency: 'BOB', minimumFractionDigits: 2 });
+    // Calcular el precio con margen de ganancia
+    let precioDocenaConMargenBOB = precioDocenaConPilotajeBOB * (1 + margen / 100);
 
-    let resultado = `
-        <h2>Resumen para ${modelo}</h2>
-        <p><strong>Nombre del modelo:</strong> ${nombre}</p>
-        <p><strong>Cantidad de bultos comprados:</strong> ${cantidadBultos}</p>
-        <p><strong>Precio por docena sin margen en BOB:</strong> ${formatter.format(precioDocenaBOB)}</p>
-        <p><strong>Precio por docena con pilotaje (sin margen) en BOB:</strong> ${formatter.format(precioFinalDocenaTotal)}</p>
-        <p><strong>Precio de la docena con margen de ganancia en BOB:</strong> ${formatter.format(precioVentaFinalConMargen)}</p>
-    `;
-    
-    document.getElementById('resultado').innerHTML = resultado;
-
-    // Guardar en LocalStorage (opcional)
-    guardarNota(modelo, nombre, precioPorDocenaUSD, tasaCambio, docenasPorBulto, cantidadBultos, margen, pilotajeUSD);
-}
+    // Guardar la nota
+    let notas = JSON.parse(localStorage.getItem('notas')) || [];
+    notas.push({
+        nombre: nombre,
+        codigo: codigo,
+        precioConMargen: precioDocenaConMargenBOB.toFixed(2)
+    });
