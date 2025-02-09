@@ -75,15 +75,13 @@ form button:hover {
 
 #notesContainer {
   margin-top: 20px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
 }
 
 .note-item {
   background: #f9f9f9;
   border: 1px solid #ddd;
   padding: 10px;
+  margin-bottom: 10px;
   border-radius: 5px;
   text-align: center;
 }
