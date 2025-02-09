@@ -1,37 +1,62 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Medias</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculadora de Medias</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="menu">
-        <button id="verNotas">Ver Notas</button>
-        <button id="crearNotas">Crear Notas</button>
-    </div>
-
-    <div id="crearNotasForm" style="display:none;">
-        <h3>Crear Nota</h3>
-        <label for="codigo">Código del modelo:</label>
-        <input type="text" id="codigo">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre">
-        <label for="precio">Precio de la docena (en USD):</label>
-        <input type="number" id="precio">
-        <label for="tasa">Tasa de cambio (USD a BOB):</label>
-        <input type="number" id="tasa">
-        <label for="margen">Margen de ganancia (%):</label>
-        <input type="number" id="margen">
-        <button id="guardarNota">Guardar Nota</button>
-    </div>
-
-    <div id="verNotasList" style="display:none;">
-        <h3>Notas Guardadas</h3>
-        <div id="notasLista"></div>
-    </div>
-
-    <script src="app.js"></script>
+  <div class="container">
+    <header>
+      <h1>Calculadora de Medias</h1>
+      <nav>
+        <button id="crearNotaBtn">Crear Nota</button>
+        <button id="verNotasBtn">Ver Notas</button>
+      </nav>
+    </header>
+    
+    <!-- Sección: Crear Nota -->
+    <section id="crearNotaSection" class="section">
+      <h2>Crear Nueva Nota</h2>
+      <form id="createNoteForm">
+        <label for="price">Precio de docena (USD):</label>
+        <input type="number" id="price" step="0.01" required>
+        
+        <label for="exchange">Valor del dólar (BOB):</label>
+        <input type="number" id="exchange" step="0.01" required>
+        
+        <label for="packages">Cantidad de bultos:</label>
+        <input type="number" id="packages" required>
+        
+        <label for="dozens">Docenas por bulto:</label>
+        <input type="number" id="dozens" required>
+        
+        <label for="pilotage">Pilotaje por bulto (USD):</label>
+        <input type="number" id="pilotage" step="0.01" required>
+        
+        <label for="modelCode">Código del modelo:</label>
+        <input type="text" id="modelCode" required>
+        
+        <label for="modelName">Nombre del modelo:</label>
+        <input type="text" id="modelName" required>
+        
+        <label for="margin">Margen de ganancia (%):</label>
+        <input type="number" id="margin" step="0.1" required>
+        
+        <button type="submit">Calcular y Guardar Nota</button>
+      </form>
+      
+      <div id="calculationResult"></div>
+    </section>
+    
+    <!-- Sección: Ver Notas -->
+    <section id="verNotasSection" class="section" style="display:none;">
+      <h2>Notas Guardadas</h2>
+      <div id="notesContainer"></div>
+    </section>
+  </div>
+  
+  <script src="app.js"></script>
 </body>
 </html>
