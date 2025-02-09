@@ -3,46 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Precios de Medias</title>
+    <title>Calculadora de Medias</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
     <h1>Calculadora de Precios de Medias</h1>
 
-    <div>
-        <label for="precioDocena">Precio por Docena (USD):</label>
+    <nav>
+        <button onclick="mostrarSeccion('calculadora')">Crear Nota</button>
+        <button onclick="mostrarSeccion('verNotas')">Ver Notas</button>
+    </nav>
+
+    <section id="calculadora">
+        <h2>Ingresar Datos</h2>
+
+        <label>Código del Modelo:</label>
+        <input type="text" id="codigo">
+
+        <label>Nombre del Modelo:</label>
+        <input type="text" id="nombre">
+
+        <label>Precio por Docena (USD):</label>
         <input type="number" id="precioDocena">
-    </div>
 
-    <div>
-        <label for="docenas">Cantidad de Docenas por Bulto:</label>
-        <input type="number" id="docenas">
-    </div>
-
-    <div>
-        <label for="pilotaje">Pilotaje por Bulto (USD):</label>
-        <input type="number" id="pilotaje">
-    </div>
-
-    <div>
-        <label for="tasaCambio">Valor del Dólar (BOB):</label>
+        <label>Tasa de Cambio (BOB/USD):</label>
         <input type="number" id="tasaCambio">
-    </div>
 
-    <div>
-        <label for="margen">Margen de Ganancia (%):</label>
-        <input type="number" id="margen">
-    </div>
+        <label>Docenas por Bulto:</label>
+        <input type="number" id="docenasPorBulto">
 
-    <div>
-        <label for="cantidadBultos">Cantidad de Bultos:</label>
+        <label>Pilotaje por Bulto (USD):</label>
+        <input type="number" id="pilotaje">
+
+        <label>Cantidad de Bultos:</label>
         <input type="number" id="cantidadBultos">
-    </div>
 
-    <button onclick="calcular()">Calcular</button>
+        <label>Margen de Ganancia (%):</label>
+        <input type="number" id="margen">
 
-    <div id="resultado"></div>
+        <button onclick="calcular()">Calcular y Guardar</button>
+
+        <div id="resultado"></div>
+    </section>
+
+    <section id="verNotas" style="display: none;">
+        <h2>Notas Guardadas</h2>
+        <div id="listaNotas"></div>
+    </section>
 
     <script src="app.js"></script>
+
 </body>
 </html>
