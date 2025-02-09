@@ -1,6 +1,7 @@
 function calcular() {
     // Obtener valores ingresados por el usuario
     let modelo = document.getElementById('modelo').value.trim();
+    let nombre = document.getElementById('nombre').value.trim();
     let precioPorDocenaUSD = parseFloat(document.getElementById('precioDocena').value);
     let tasaCambio = parseFloat(document.getElementById('tasaCambio').value);
     let docenasPorBulto = parseInt(document.getElementById('docenas').value);
@@ -9,7 +10,7 @@ function calcular() {
     let pilotajeUSD = parseFloat(document.getElementById('pilotaje').value);
 
     // Validaciones: verificar que todos los valores sean números válidos y mayores a 0
-    if (!modelo || isNaN(precioPorDocenaUSD) || precioPorDocenaUSD <= 0 ||
+    if (!modelo || !nombre || isNaN(precioPorDocenaUSD) || precioPorDocenaUSD <= 0 ||
         isNaN(tasaCambio) || tasaCambio <= 0 ||
         isNaN(docenasPorBulto) || docenasPorBulto <= 0 ||
         isNaN(cantidadBultos) || cantidadBultos <= 0 ||
@@ -44,6 +45,7 @@ function calcular() {
     // Mostrar resultados con mejor formato
     let resultado = `
         <h2>Resumen para ${modelo}</h2>
+        <p><strong>Nombre del modelo:</strong> ${nombre}</p>
         <p><strong>Cantidad de bultos comprados:</strong> ${cantidadBultos}</p>
         <p><strong>Precio de la docena sin margen en BOB:</strong> ${formatter.format(precioDocenaBOB)}</p>
         <p><strong>Precio de la docena con pilotaje y sin margen en BOB:</strong> ${formatter.format(precioFinalDocenaTotal)}</p>
@@ -54,11 +56,11 @@ function calcular() {
     document.getElementById('resultado').innerHTML = resultado;
 
     // Guardar en LocalStorage (opcional)
-    guardarNota(modelo, precioPorDocenaUSD, tasaCambio, docenasPorBulto, cantidadBultos, margen, pilotajeUSD);
+    guardarNota(modelo, nombre, precioPorDocenaUSD, tasaCambio, docenasPorBulto, cantidadBultos, margen, pilotajeUSD);
 }
 
 // Función para guardar la nota en LocalStorage
-function guardarNota(modelo, precioPorDocenaUSD, tasaCambio, docenasPorBulto, cantidadBultos, margen, pilotajeUSD) {
+function guardarNota(modelo, nombre, precioPorDocenaUSD, tasaCambio, docenasPorBulto, cantidadBultos, margen, pilotajeUSD) {
     let notas = JSON.parse(localStorage.getItem("notas")) || [];
     let totalDocenas = cantidadBultos * docenasPorBulto;
     let precioDocenaBOB = precioPorDocenaUSD * tasaCambio;
@@ -68,6 +70,7 @@ function guardarNota(modelo, precioPorDocenaUSD, tasaCambio, docenasPorBulto, ca
 
     let nota = {
         codigo: modelo,
+        nombre: nombre,
         precioDocena: precioDocenaBOB,
         precioDocenaConPilotaje: precioFinalDocenaTotal,
         precioDocenaConMargen: precioVentaFinalCBBA
@@ -78,32 +81,26 @@ function guardarNota(modelo, precioPorDocenaUSD, tasaCambio, docenasPorBulto, ca
 
     // Guardar el array actualizado en LocalStorage
     localStorage.setItem("notas", JSON.stringify(notas));
+
+    // Actualizar la vista de notas
+    mostrarNotas();
 }
 
 // Función para mostrar todas las notas guardadas
 function mostrarNotas() {
     let notas = JSON.parse(localStorage.getItem("notas")) || [];
-    let contenidoNotas = "<h3>Notas Guardadas</h3>";
+    let listaNotas = document.getElementById('nota-lista');
+    listaNotas.innerHTML = '';
 
-    if (notas.length > 0) {
-        contenidoNotas += "<ul>";
-        notas.forEach((nota, index) => {
-            contenidoNotas += `
-                <li>
-                    <strong>Codigo:</strong> ${nota.codigo} <br>
-                    <strong>Precio por docena con margen (BOB):</strong> ${nota.precioDocenaConMargen} <br>
-                    <strong>Precio por docena sin margen (BOB):</strong> ${nota.precioDocena} <br>
-                    <button onclick="eliminarNota(${index})">Eliminar</button>
-                    <button onclick="verDetalles(${index})">Ver Detalles</button>
-                </li>
-            `;
-        });
-        contenidoNotas += "</ul>";
-    } else {
-        contenidoNotas += "<p>No hay notas guardadas.</p>";
-    }
-
-    document.getElementById("notasGuardadas").innerHTML = contenidoNotas;
+    notas.forEach((nota, index) => {
+        let li = document.createElement('li');
+        li.innerHTML = `
+            <p><strong>Codigo:</strong> ${nota.codigo} <strong>Nombre:</strong> ${nota.nombre}</p>
+            <p><strong>Precio por docena con margen (en BOB):</strong> ${new Intl.NumberFormat('es-BO', { style: 'currency', currency: 'BOB' }).format(nota.precioDocenaConMargen)}</p>
+            <button onclick="eliminarNota(${index})">Eliminar</button>
+        `;
+        listaNotas.appendChild(li);
+    });
 }
 
 // Función para eliminar una nota
@@ -111,21 +108,8 @@ function eliminarNota(index) {
     let notas = JSON.parse(localStorage.getItem("notas")) || [];
     notas.splice(index, 1);
     localStorage.setItem("notas", JSON.stringify(notas));
-    mostrarNotas(); // Volver a mostrar las notas después de eliminar
+    mostrarNotas();
 }
 
-// Función para ver los detalles de una nota
-function verDetalles(index) {
-    let notas = JSON.parse(localStorage.getItem("notas")) || [];
-    let nota = notas[index];
-
-    let detalles = `
-        <h3>Detalles de la Nota</h3>
-        <p><strong>Código:</strong> ${nota.codigo}</p>
-        <p><strong>Precio por docena sin margen (BOB):</strong> ${nota.precioDocena}</p>
-        <p><strong>Precio por docena con pilotaje (BOB):</strong> ${nota.precioDocenaConPilotaje}</p>
-        <p><strong>Precio por docena con margen de ganancia (BOB):</strong> ${nota.precioDocenaConMargen}</p>
-    `;
-
-    document.getElementById("detallesNota").innerHTML = detalles;
-}
+// Cargar las notas al iniciar la página
+window.onload = mostrarNotas;
