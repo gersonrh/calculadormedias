@@ -158,11 +158,10 @@ insertarProductosDesdeFactura = async (productos) => {
 
 obtenerTipoCambioDolar = async () => {
   try {
-    const res = await fetch("https://api.binance.com/api/v3/ticker/price?symbol=USDTBOB");
-    const data = await res.json();
-    return parseFloat(data.price);
+    const exchangeInput = document.getElementById("exchange");
+  return parseFloat(exchangeInput.value) || 17;
   } catch (error) {
-    console.error("Error al obtener tipo de cambio:", error);
-    return 6.9;
+    const exchangeInput = document.getElementById("exchange");
+  return parseFloat(exchangeInput.value) || 17;
   }
 };
